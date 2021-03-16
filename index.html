@@ -6,12 +6,9 @@
 	</head>
 	<body>
 		<div id="vertex-shader" class="shader">/**Arrowhead Co. - Vertex Shader v1.0>>> Vertex shader for 3D WebGL Engine.**//*VERTEX SHADER*/precision mediump float;uniform mat4 proj;uniform mat4 world;uniform mat4 trans;uniform mat4 rot;attribute vec3 vertex;attribute vec2 txCoor;varying vec2 fragTex;void main(){fragTex = txCoor;gl_Position = proj * world * trans * rot * vec4(vertex, 1.0);}</div>
-
 		<div id="fragment-shader" class="shader">/**Arrowhead Co. - Fragment Shader v1.0>>> Fragment shader for 3D WebGL Engine.**/precision mediump float;uniform sampler2D texture;varying vec2 fragTex;void main(){gl_FragColor = texture2D(texture, fragTex);}</div>
 		<div id="info">
-			<div id="title">
-				
-			</div>
+			<div id="title"></div>
 			<div id="controls">
 				CLICK TO SHOOT AT THE RED THINGS / ESC TO EXIT<br>
 				WASD / ARROW + SPACE KEYS TO MOVE
@@ -20,14 +17,14 @@
 		<div id="crosshair">
 			+
 		</div>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-iostream-v1.0.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-context-v1.0.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-matrix-v1.0.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-shorthand-v1.0.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-camera-v1.0.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-engine-v1.0.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-textures-v1.0.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-objects-v1.0.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-iostream-v1.0.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-context-v1.0.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-matrix-v1.0.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-shorthand-v1.0.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-camera-v1.0.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-engine-v1.0.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-textures-v1.0.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-objects-v1.0.min.js"></script>
 		<script src="./game.js"></script>
 	</body>
 </html>
