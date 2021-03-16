@@ -2,115 +2,12 @@
 	<head>
 		<meta charset="utf-8">
 		<title>SHOOTER</title>
-		<style>
-			* {
-				box-sizing: border-box;
-				margin: 0;
-				padding: 0;
-				overflow: hidden;
-				pointer-events: none;
-			}
-			canvas {
-				width: 100vw;
-				height: 100vh;
-				pointer-events: auto;
-			}
-			shader {
-				display: none;
-			}
-			#info {
-				position: fixed;
-				top:  0;
-				left: 0;
-				padding-top: 25px;
-				padding-bottom: 25px;
-				width:  100vw;
-				height: 100vh;
-				color: white;
-				font-family: Russo One;
-				text-align: center;
-			}
-			#info > div {
-				background-color: rgba(0, 0, 0, 0.6);
-				position: inline-block;
-			}
-			#title {
-				font-size: 7vw;
-			}
-			#controls {
-				position: fixed;
-				padding: 20px;
-				padding-bottom: 40px;
-				bottom: 0;
-				width: 100vw;
-				font-size: 3vw;
-				font-family: Russo One;
-				text-align: center;
-			}
-			#crosshair {
-				position: fixed;
-				top:  50vh;
-				left: 50vw;
-				margin: -62.5px;
-				width:  125px;
-				height: 125px;
-				padding: 0;
-				color: red;
-				font-size: 100px;
-				text-align: center;
-				-webkit-text-stroke-width: 1px;
-  			-webkit-text-stroke-color: black;
-				overflow: visible;
-			}
-		</style>
+		<link rel="stylesheet" href="./style.css" />
 	</head>
 	<body>
-		<div id="vertex-shader" class="shader">
-			/**
-				Arrowhead Co. - Vertex Shader v1.0
+		<div id="vertex-shader" class="shader">/**Arrowhead Co. - Vertex Shader v1.0>>> Vertex shader for 3D WebGL Engine.**//*VERTEX SHADER*/precision mediump float;uniform mat4 proj;uniform mat4 world;uniform mat4 trans;uniform mat4 rot;attribute vec3 vertex;attribute vec2 txCoor;varying vec2 fragTex;void main(){fragTex = txCoor;gl_Position = proj * world * trans * rot * vec4(vertex, 1.0);}</div>
 
-				>>> Vertex shader for 3D WebGL Engine.
-			**/
-
-				/*VERTEX SHADER*/
-
-			precision mediump float;
-
-			uniform mat4 proj;
-			uniform mat4 world;
-			uniform mat4 trans;
-			uniform mat4 rot;
-
-			attribute vec3 vertex;
-			attribute vec2 txCoor;
-
-			varying vec2 fragTex;
-
-			void main(){
-
-				fragTex = txCoor;
-
-				gl_Position = proj * world * trans * rot * vec4(vertex, 1.0);
-			}
-		</div>
-
-		<div id="fragment-shader" class="shader">
-			/**
-				Arrowhead Co. - Fragment Shader v1.0
-
-				>>> Fragment shader for 3D WebGL Engine.
-			**/
-
-			precision mediump float;
-
-			uniform sampler2D texture;
-
-			varying vec2 fragTex;
-
-			void main(){
-				gl_FragColor = texture2D(texture, fragTex);
-			}
-		</div>
+		<div id="fragment-shader" class="shader">/**Arrowhead Co. - Fragment Shader v1.0>>> Fragment shader for 3D WebGL Engine.**/precision mediump float;uniform sampler2D texture;varying vec2 fragTex;void main(){gl_FragColor = texture2D(texture, fragTex);}</div>
 		<div id="info">
 			<div id="title">
 				
