@@ -1,0 +1,2004 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>SHOOTER</title>
+		<style>
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				font-family: Russo One;
+				text-align: center;
+				text-decoration: none;
+			}
+
+			canvas {
+				width: 100vw;
+				height: 100vh;
+				pointer-events: auto;
+			}
+
+			shader {
+				display: none;
+			}
+
+			button {
+				color: #fff;
+				background: #0000ff;
+				border: 5px solid #0000dd;
+				border-radius: 3px;
+				margin: 5px;
+			}
+
+			button:hover {
+				transition: 0.2s;
+				background: #0000cc;
+				border: 5px solid #0000aa;
+			}
+
+			a {
+				color: #0000aa;
+			}
+
+			#how {
+				display: none;
+			}
+
+			#credits {
+				display: none;
+			}
+
+			#changelog {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="menu">
+			<h1>WebGL shooter</h1>
+			<button onClick="openWindow()">Play</button><br />
+			<button onClick="show('how')">How</button><br />
+			<button onClick="show('credits')">Credits</button><br />
+			<button onClick="show('changelog')">Changelog</button>
+		</div>
+		<div id="how">
+			<button onClick="show('menu')">Back</button>
+			<h1>How</h1>
+			<p>Use WASD or arrow keys to move. Click to shoot. When you reach a certain point, the game will make the level change.</p>
+		</div>
+		<div id="credits">
+			<button onClick="show('menu')">Back</button>
+			<h1>Credits</h1>
+			<ul>
+				<li><a href="https://www.khanacademy.org/profile/MoDavid">Arrowhead Co.</a> for the engine, and basic functions.</li>
+				<li><a href="https://www.khanacademy.org/profile/Omay238">Omay</a> for everything else.</li>
+			</ul>
+		</div>
+		<div id="changelog">
+			<button onClick="show('menu')">Back</button>
+			<h1>Changelog</h1>
+			<h2>Initial</h2>
+			<ul>
+				<li>Added inside scripts due to me being offline</li>
+				<li>Added pages</li>
+			</ul>
+			<h2>Day 1</h2>
+			<ul>
+				<li>Added levels without usability</li>
+				<li>Began work on level functions</li>
+				<li>Added object deletion</li>
+			</ul>
+			<h2>Day 2</h2>
+			<ul>
+				<li>Added level changer</li>
+				<li>Added more levels</li>
+			</ul>
+		</div>
+		<script>
+			function hideAll() {
+				document.getElementById("menu").style.display = "none";
+				document.getElementById("how").style.display = "none";
+				document.getElementById("credits").style.display = "none";
+				document.getElementById("changelog").style.display = "none";
+					
+			}
+
+			function show(id) {
+				hideAll();
+				document.getElementById(id)
+					.style.display = "block";
+			}
+		</script><!--Hide and show pages-->
+		<script type="application/javascript">
+			function openWindow() {
+				var w = window.open();
+				w.document.open();
+				w.document.write(`<!DOCTYPE html>
+<html>
+	<head>
+		<title>SHOOTER</title>
+		<meta name="author" content="Arrowhead Co. & Omay Operations" />
+		<meta name="description" content="WebGL shooter" />
+		<style>
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				font-family: Russo One;
+				text-align: center;
+				text-decoration: none;
+				pointer-events: none;
+			}
+
+			canvas {
+				width: 100vw;
+				height: 100vh;
+				pointer-events: auto;
+			}
+
+			shader {
+				display: none;
+			}
+			
+			#info {
+				position: fixed;
+				top: 0;
+				left: 0;
+				padding-top: 25px;
+				padding-bottom: 25px;
+				width: 100vw;
+				height: 100vh;
+				color: white;
+			}
+
+			#info>div {
+				background-color: rgba(0, 0, 0, 0.6);
+				position: inline-block;
+			}
+
+			#title {
+				font-size: 7vw;
+			}
+
+			#controls {
+				position: fixed;
+				padding: 20px;
+				padding-bottom: 40px;
+				bottom: 0;
+				width: 100vw;
+				font-size: 3vw;
+				text-align: center;
+			}
+
+			#crosshair {
+				position: fixed;
+				top: 53vh;
+				left: 50vw;
+				margin: -62.5px;
+				width: 125px;
+				height: 125px;
+				padding: 0;
+				color: red;
+				font-size: 75px;
+				text-align: center;
+				-webkit-text-stroke-width: 1px;
+				-webkit-text-stroke-color: black;
+				overflow: visible;
+			}
+		</style>
+	</head>
+
+	<body>
+		<canvas>ERROR: Browser does not support HTML5.</canvas>
+		<div id="vertex-shader"> /** Arrowhead Co. - Vertex Shader v1.0 >>> Vertex shader for 3D WebGL Engine. **/ /*VERTEX SHADER*/ precision mediump float; uniform mat4 proj; uniform mat4 world; uniform mat4 trans; uniform mat4 rot; attribute vec3 vertex; attribute vec2 txCoor; varying vec2 fragTex; void main(){ fragTex = txCoor; gl_Position = proj * world * trans * rot * vec4(vertex, 1.0); } </div>
+		<div id="fragment-shader"> /** Arrowhead Co. - Fragment Shader v1.0 >>> Fragment shader for 3D WebGL Engine. **/ precision mediump float; uniform sampler2D texture; varying vec2 fragTex; void main(){ gl_FragColor = texture2D(texture, fragTex); } </div>
+		<div id="info">
+			<div id="title"></div>
+			<div id="controls"> CLICK TO SHOOT AT THE RED THINGS / ESC TO EXIT<br />WASD / ARROW + SPACE KEYS TO MOVE </div>
+		</div>
+		<div id="crosshair">O</div>
+		<script>
+			/**
+	        Arrowhead Co. - WebGL Input / Output Stream v1.0 
+	        >>> 
+	        Handles input and output for WebGL 3D Engine.
+            **/
+			/*GLOBALS*/
+			var keys = {};
+			var mouse = {
+				x: 0,
+				y: 0,
+				//Distance change
+				//
+				dx: 0,
+				dy: 0,
+				pressed: false,
+				released: false,
+				isPressed: false,
+				leftIsPressed: false,
+				rightIsPressed: false,
+				//Should be called in loop (last-most)
+				//
+				reset: function() {
+					//Resets mouse details
+					//
+					this.dx = 0;
+					this.dy = 0;
+					this.pressed = false;
+					this.released = false;
+					return true;
+				}
+			};
+			var pointerLock = document.body.requestPointerLock || document.body.mozRequestPointerLock;
+			var exitPointerLock = document.body.exitPointerLock || document.body.mozExitPointerLock;
+			/*MOUSE UTILITY FUNCTIONS*/
+			function isLocked() {
+				//Attaches and detaches mouse mover
+				// 
+				if(document.pointerLockElement !== null) {
+					document.addEventListener("mousemove", mouseMove);
+				} else {
+					document.removeEventListener("mousemove", mouseMove);
+				}
+			};
+
+			function mouseMove(input) {
+				//Distance change
+				//
+				mouse.dx = input.movementX;
+				mouse.dy = input.movementY;
+			};
+
+			function mousePress(input) {
+				//Handles mouse pressing
+				//
+				mouse.pressed = true;
+				mouse.isPressed = true;
+				if(input.button == 0) {
+					mouse.button = "left";
+					mouse.leftIsPressed = true;
+				} else {
+					mouse.button = "right";
+					mouse.rightIsPressed = true;
+				}
+			};
+
+			function mouseRelease(input) {
+				//Handles mouse releasing
+				//
+				mouse.released = true;
+				mouse.isPressed = false;
+				mouse.button = undefined;
+				if(input.button === 0) {
+					mouse.leftIsPressed = false;
+				} else {
+					mouse.rightIsPressed = false;
+				}
+			};
+			/*KEY UTILITY FUNCTIONS*/
+			function keyPress(input) {
+				let key = input.code;
+				//Better key handling
+				//
+				if(key.includes("Key")) {
+					key = key.slice(3);
+				}
+				if(key.includes("Arrow")) {
+					key = key.slice(5);
+				}
+				keys[key.toUpperCase()] = true;
+			};
+
+			function keyRelease(input) {
+				let key = input.code;
+				//Better key handling
+				//
+				if(key.includes("Key")) {
+					key = key.slice(3);
+				}
+				if(key.includes("Arrow")) {
+					key = key.slice(5);
+				}
+				keys[key.toUpperCase()] = false;
+			};
+			//Suggestion by Daniel (Thanks!)
+			//
+			document.body.addEventListener('keydown', function(event) {
+				// Prevents the default action AKA scrolling
+				//
+				event.preventDefault();
+			});
+			/*BINDINGS*/
+			//Mouse functions
+			//
+			document.addEventListener("mousedown", mousePress);
+			document.addEventListener("mouseup", mouseRelease);
+			document.getElementsByTagName("canvas")[0].onclick = pointerLock;
+			document.addEventListener("pointerlockchange", isLocked);
+			document.addEventListener("mozpointerlockchange", isLocked);
+			//Key functions
+			//
+			document.addEventListener("keydown", keyPress);
+			document.addEventListener("keyup", keyRelease);
+		<\/script><!--IO stream-->
+		<script>
+			/**
+	        Arrowhead Co. - WebGL Context Setting v1.0
+            >>> 
+            Readily sets WebGLRenderingContext.
+	        >>> 
+	        Provides some utility functions for basic tasks.
+            **/
+			/*GLOBALS*/
+			var canvas, //Canvas element
+				gl, //Rendering context
+				width, //Canvas width
+				height, //Canvas height
+				RESOLUTION = 0.5; //Resolution 0-1 (1 - best)
+			/*SETUP*/
+			function setup() {
+				canvas = document.getElementsByTagName("canvas")[0];
+				//User forgot to create canvas
+				//
+				if(!canvas) {
+					console.error("ERROR: No canvas found.");
+					return false;
+				}
+				//Sets webgl rendering context; fallback when necessary
+				//
+				gl = canvas.getContext("webgl", {
+					antialias: false
+				});
+				if(!gl) {
+					console.warn("WARNING: falling back on experimental webgl.");
+					gl = canvas.getContext("experimental-webgl", {
+						antialias: false
+					});
+				}
+				//A bad non-compliant browser is being used
+				//
+				if(!gl) {
+					console.error("ERROR: WebGL not supported by browser.");
+					return false;
+				}
+				//Canvas resizing and buffer resetting
+				//
+				resize();
+				clear();
+				return true;
+			}
+			/*FONTS*/
+			//Fonts
+			//
+			function fontDefine() {
+				let fontString = "";
+				//For each font
+				//
+				for(let i = 0; i < arguments.length; i++) {
+					let font = arguments[i].split(" ");
+					for(let j = 0; j < font.length; j++) {
+						fontString += font[j];
+						if(j !== font.length - 1) {
+							fontString += "+";
+						}
+					}
+					if(i !== arguments.length - 1) {
+						fontString += "|";
+					}
+				}
+				let fonts = document.getElementById("fonts");
+				//Append link to head element
+				//
+				if(fonts) {
+					fonts.parentNode.removeChild(fonts);
+				} else {
+					let link = document.createElement("link");
+					//Generate link
+					//
+					link.id = "fonts";
+					link.rel = "stylesheet";
+					link.type = "text/css";
+					link.href = "https://fonts.googleapis.com/css?family=" + fontString;
+					document.getElementsByTagName("head")[0].appendChild(link);
+				}
+				return true;
+			}
+			/*BUFFER CLEARING*/
+			function clear(buffer, color) {
+				//Sets default clear color (black)
+				//
+				if(!color) {
+					gl.clearColor(0.0, 0.0, 0.0, 1.0);
+				} else {
+					//User-specified color is of wrong format
+					//
+					if(color.length !== 4) {
+						console.error("ERROR: Incorrect color specification at clear().");
+						return false;
+					}
+					gl.clearColor(color[0], color[1], color[2], color[3]);
+				}
+				//Clears both buffers by default
+				//
+				if(!buffer) {
+					gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+				} else {
+					//Clears buffers individually if specified
+					//
+					if(buffer === "color") {
+						gl.clear(gl.COLOR_BUFFER_BIT);
+					}
+					if(buffer === "depth") {
+						gl.clear(gl.DEPTH_BUFFER_BIT);
+					}
+					//Just in case
+					//
+					if(buffer !== "color" || buffer !== "depth") {
+						console.error("ERROR: Incorrect buffer specification at clear().");
+						return false;
+					}
+				}
+				return true;
+			};
+			/*WINDOW RESIZING*/
+			function resize() {
+				//Canvas size based on viewport
+				//
+				canvas.width = window.innerWidth * RESOLUTION;
+				canvas.height = window.innerHeight * RESOLUTION;
+				width = window.innerWidth * RESOLUTION;
+				height = window.innerHeight * RESOLUTION;
+				//Configure webgl to canvas
+				//
+				gl.viewport(0, 0, width, height);
+			};
+			/*BINDING*/
+			setup();
+			window.onresize = resize;
+		<\/script><!--Context-->
+		<script>
+			/**
+	        Arrowhead Co. - WebGL Matrix Library v1.0
+            >>> 
+            Helps with handling and creating matrices.
+	        >>> 
+	        All matrices are 4x4 by default.
+            **/
+			/*GLOBALS*/
+			//Defines a 4x4 matrix
+			//
+			function Matrix(a1, b1, c1, d1, a2, b2, c2, d2, a3, b3, c3, d3, a4, b4, c4, d4) {
+				this.id = "matrix4x4";
+				//Just in case
+				//
+				if(arguments.length !== 16 && arguments.length !== 1) {
+					console.error("ERROR: Incorrect number of arguments at matrix4x4.");
+					return false;
+				}
+				//Different cases of user input
+				//
+				if(typeof arguments[0] === "number") {
+					this.value = new Float32Array(16);
+					this.value[0] = a1;
+					this.value[1] = b1;
+					this.value[2] = c1;
+					this.value[3] = d1;
+					this.value[4] = a2;
+					this.value[5] = b2;
+					this.value[6] = c2;
+					this.value[7] = d2;
+					this.value[8] = a3;
+					this.value[9] = b3;
+					this.value[10] = c3;
+					this.value[11] = d3;
+					this.value[12] = a4;
+					this.value[13] = b4;
+					this.value[14] = c4;
+					this.value[15] = d4;
+				} else {
+					this.value = arguments[0];
+				}
+				return this;
+			};
+			/*METHODS*/
+			//Adds a matrix to current value
+			//
+			Matrix.prototype.add = function(matrix) {
+				for(let i = 0; i < this.value.length; i++) {
+					this.value[i] += matrix.value[i];
+				}
+				return this.value;
+			};
+			//Subtracts a matrix from current value
+			//
+			Matrix.prototype.sub = function(matrix) {
+				for(let i = 0; i < this.value.length; i++) {
+					this.value[i] -= matrix.value[i];
+				}
+				return this.value;
+			};
+			//Scales a matrix
+			//
+			Matrix.prototype.xScalar = function(scalar) {
+				for(let i = 0; i < this.value.length; i++) {
+					this.value[i] *= scalar;
+				}
+				return this.value;
+			};
+			//Multiples two matrices
+			//
+			Matrix.prototype.xMatrix = function(matrix) {
+				var product = new Float32Array(16);
+				for(let i = 0; i < 4; i++) {
+					for(let j = 0; j < 4; j++) {
+						//Computes each element
+						//
+						product[(i << 2) + j] = this.value[i * 4 + 0] * matrix.value[j + 0] + this.value[i * 4 + 1] * matrix.value[j + 4] + this.value[i * 4 + 2] * matrix.value[j + 8] + this.value[i * 4 + 3] * matrix.value[j + 12];
+					}
+				}
+				this.value = product;
+				return this.value;
+			};
+			/*STATICS*/
+			//Creates a new identity matrix
+			//
+			Matrix.identity = function() {
+				var identity = new Matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+				return identity;
+			};
+			//Creates a new rotation matrix along the x-axis
+			//
+			Matrix.rotateX = function(angle) {
+				let rotation = new Float32Array(16);
+				for(let i = 0; i < 16; i++) {
+					rotation[i] = 0;
+				}
+				//Defines rotation matrix
+				//
+				rotation[0] = 1;
+				rotation[5] = Math.cos(angle);
+				rotation[6] = Math.sin(angle);
+				rotation[9] = -Math.sin(angle);
+				rotation[10] = Math.cos(angle);
+				rotation[15] = 1;
+				return new Matrix(rotation);
+			};
+			//Creates a new rotation matrix along the y-axis
+			//
+			Matrix.rotateY = function(angle) {
+				let rotation = new Float32Array(16);
+				for(let i = 0; i < 16; i++) {
+					rotation[i] = 0;
+				}
+				//Defines rotation matrix
+				//
+				rotation[0] = Math.cos(angle);
+				rotation[2] = Math.sin(angle);
+				rotation[5] = 1;
+				rotation[8] = -Math.sin(angle);
+				rotation[10] = Math.cos(angle);
+				rotation[15] = 1;
+				return new Matrix(rotation);
+			};
+			//Creates a new rotation matrix along the z-axis
+			//
+			Matrix.rotateZ = function(angle) {
+				let rotation = new Float32Array(16);
+				for(let i = 0; i < 16; i++) {
+					rotation[i] = 0;
+				}
+				//Defines rotation matrix
+				//
+				rotation[0] = Math.cos(angle);
+				rotation[1] = -Math.sin(angle);
+				rotation[4] = Math.sin(angle);
+				rotation[5] = Math.cos(angle);
+				rotation[10] = 1;
+				rotation[15] = 1;
+				return new Matrix(rotation);
+			};
+			//Creates a new rotation matrix
+			//
+			Matrix.rotate = function(x, y, z) {
+				let rotation = new Float32Array(16);
+				let cz = Math.cos(z),
+					cy = Math.cos(y),
+					cx = Math.cos(x),
+					sz = Math.sin(z),
+					sy = Math.sin(y),
+					sx = Math.sin(x);
+				//Defines rotation along all axes
+				//
+				rotation[0] = cz * cy;
+				rotation[1] = cz * sy * sx - sz * cx;
+				rotation[2] = cz * sy * cx + sz * sx;
+				rotation[3] = 0;
+				rotation[4] = sz * cy;
+				rotation[5] = sz * sy * sx + cz * cx;
+				rotation[6] = sz * sy * cx - cz * sx
+				rotation[7] = 0;
+				rotation[8] = -sy;
+				rotation[9] = cy * sx;
+				rotation[10] = cy * cx;
+				rotation[11] = 0;
+				rotation[12] = 0;
+				rotation[13] = 0;
+				rotation[14] = 0;
+				rotation[15] = 1;
+				return new Matrix(rotation);
+			};
+			//Creates a translation matrix
+			//
+			Matrix.translate = function(x, y, z) {
+				let translation = new Float32Array(16);
+				for(let i = 0; i < 16; i++) {
+					translation[i] = 0;
+				}
+				//Defines translation matrix
+				//
+				translation[0] = 1;
+				translation[5] = 1;
+				translation[10] = 1;
+				translation[15] = 1;
+				translation[12] = x;
+				translation[13] = y;
+				translation[14] = z;
+				return new Matrix(translation);
+			};
+			//Creates a projection matrix from 3D to 2D
+			Matrix.projection = function(fovy, aspect, zMin, zMax) {
+				//Defaults
+				//
+				fovy = Math.max(0, Math.min(fovy, Math.PI)) || Math.PI / 4;
+				zMin = Math.max(zMin, 1 / (1 << 16)) || 0.1;
+				zMax = Math.min(zMax, 1 * (1 << 16)) || 1000;
+				aspect = aspect || 1;
+				//Resulting projection matrix
+				//
+				let projection = new Float32Array(16);
+				//Set all to zero first
+				//
+				for(let i = 0; i < 16; i++) {
+					projection[i] = 0;
+				}
+				//Define necessary parts
+				//
+				projection[0] = 1.0 / Math.tan(fovy / 2) / aspect;
+				projection[5] = 1.0 / Math.tan(fovy / 2);
+				projection[11] = -1;
+				projection[10] = (zMax + zMin) / (zMin - zMax);
+				projection[14] = (zMax * zMin) / (zMin - zMax) * 2;
+				return new Matrix(projection);
+			};
+			//Creates a viewing matrix (with respect to camera)
+			//
+			Matrix.lookAt = function(location, looking, up) {
+				let lookAt = new Float32Array(16);
+				let magnitude = 0;
+				//If too close
+				//
+				if(Math.abs(location.x - looking.x) < 0.0001 && Math.abs(location.y - looking.y) < 0.0001 && Math.abs(location.z - looking.z) < 0.0001) {
+					return Matrix.identity();
+				}
+				//Represents the forward direction (where the camera is facing)
+				//
+				let forward = {
+					x: location.x - looking.x,
+					y: location.y - looking.y,
+					z: location.z - looking.z,
+				};
+				magnitude = Math.hypot(forward.x, forward.y, forward.z);
+				//Normalize
+				//
+				forward.x /= magnitude;
+				forward.y /= magnitude;
+				forward.z /= magnitude;
+				//Represents the x-axis of the camera
+				//
+				let right = {
+					x: up.y * forward.z - up.z * forward.y,
+					y: up.z * forward.x - up.x * forward.z,
+					z: up.x * forward.y - up.y * forward.x,
+				};
+				magnitude = Math.hypot(right.x, right.y, right.z);
+				//Normalize or be destroyed
+				//
+				if(!magnitude) {
+					right.x *= 0;
+					right.y *= 0;
+					right.z *= 0;
+				} else {
+					right.x /= magnitude;
+					right.y /= magnitude;
+					right.z /= magnitude;
+				}
+				//Represents the up direction of the camera
+				let north = {
+					x: forward.y * right.z - forward.z * right.y,
+					y: forward.z * right.x - forward.x * right.z,
+					z: forward.x * right.y - forward.y * right.x,
+				};
+				magnitude = Math.hypot(north.x, north.y, north.z);
+				//Normalize or be destroyed
+				//
+				if(!magnitude) {
+					north.x *= 0;
+					north.y *= 0;
+					north.z *= 0;
+				} else {
+					north.x /= magnitude;
+					north.y /= magnitude;
+					north.z /= magnitude;
+				}
+				//Defines matrix components
+				//
+				lookAt[0] = right.x;
+				lookAt[1] = north.x;
+				lookAt[2] = forward.x;
+				lookAt[3] = 0;
+				lookAt[4] = right.y;
+				lookAt[5] = north.y;
+				lookAt[6] = forward.y;
+				lookAt[7] = 0;
+				lookAt[8] = right.z;
+				lookAt[9] = north.z;
+				lookAt[10] = forward.z;
+				lookAt[11] = 0;
+				lookAt[12] = -(right.x * location.x + right.y * location.y + right.z * location.z);
+				lookAt[13] = -(north.x * location.x + north.y * location.y + north.z * location.z);
+				lookAt[14] = -(forward.x * location.x + forward.y * location.y + forward.z * location.z);
+				lookAt[15] = 1;
+				return new Matrix(lookAt);
+			};
+			//Multiplication with vector
+			//
+			Matrix.xVector = function(vector, matrix) {
+				let result = {
+					x: 0,
+					y: 0,
+					z: 0,
+				};
+				result.x = vector.x * matrix[0] + vector.y * matrix[4] + vector.z * matrix[8] + matrix[12];
+				result.y = vector.x * matrix[1] + vector.y * matrix[5] + vector.z * matrix[9] + matrix[13];
+				result.z = vector.x * matrix[2] + vector.y * matrix[6] + vector.z * matrix[10] + matrix[14];
+				vector = result;
+				return result;
+			};
+		<\/script><!--Matrix-->
+		<script>
+			/**
+	        Arrowhead Co. - WebGL Shorthand Utility Functions v1.0
+	        >>> 
+	        Makes it easier to deal with WebGL shaders.
+	        >>> 
+	        Handles WebGL programs as well.
+	        >>> 
+	        Handles buffers and textures.
+            **/
+			/*SHADER*/
+			var SHADER = (function() {
+				//In case gl has not been defined
+				//
+				if(!gl) {
+					console.error("ERROR: gl has not been defined.");
+					return;
+				}
+				//Shader object
+				//
+				SHADER = {};
+				//Vertex shader constructor
+				//
+				SHADER.vertex = function(source) {
+					this.id = "vertex";
+					//If source is text version of shader
+					//
+					if(source.includes("void main")) {
+						this.source = source;
+					} else {
+						//Source refers to id of shader element
+						//
+						let s = document.getElementById(source);
+						s = s.innerHTML;
+						s = s.toString();
+						//Not found
+						//
+						if(!s) {
+							console.error("ERROR: Shader not found at SHADER.vertex().");
+							return false;
+						}
+						this.source = s;
+					}
+					this.shader = gl.createShader(gl.VERTEX_SHADER);
+					gl.shaderSource(this.shader, this.source);
+					return this;
+				};
+				//Fragment shader constructor
+				//
+				SHADER.fragment = function(source) {
+					this.id = "fragment";
+					//If source is text version of shader
+					//
+					if(source.includes("void main")) {
+						this.source = source;
+					} else {
+						//Source refers to id of shader element
+						//
+						let s = document.getElementById(source);
+						s = s.innerHTML;
+						s = s.toString();
+						//Not found
+						//
+						if(!s) {
+							console.error("ERROR: Shader not found at SHADER.fragment().");
+							return false;
+						}
+						this.source = s;
+					}
+					this.shader = gl.createShader(gl.FRAGMENT_SHADER);
+					gl.shaderSource(this.shader, this.source);
+					return this;
+				};
+				//Compiler
+				//
+				SHADER.compile = function(shader) {
+					//In case forgot to specify
+					//
+					if(!this.shader) {
+						console.error("ERROR: No shader specified at SHADER.compile().");
+						return false;
+					}
+					//Gets shader property of shader
+					//
+					gl.compileShader(this.shader);
+					//Compilation errors
+					//
+					if(!gl.getShaderParameter(this.shader, gl.COMPILE_STATUS)) {
+						console.error("ERROR: could not compile shader.", gl.getShaderInfoLog(this.shader));
+						return false;
+					}
+					return this;
+				};
+				//Bindings to shader prototypes
+				//
+				SHADER.vertex.prototype.compile = SHADER.compile;
+				SHADER.fragment.prototype.compile = SHADER.compile;
+				return SHADER;
+			})();
+			/*PROGRAM*/
+			var PROGRAM = (function() {
+				//In case gl has not been defined
+				//
+				if(!gl) {
+					console.error("ERROR: gl has not been defined.");
+					return;
+				}
+				//Program object
+				//
+				PROGRAM = {};
+				//New program constructor
+				//
+				PROGRAM.new = function() {
+					this.id = "program";
+					//If arguments are lacking
+					//
+					if(arguments.length < 2) {
+						console.error("ERROR: Missing a shader as input at PROGRAM.new().");
+						return false;
+					}
+					let hasVert = false,
+						hasFrag = false;
+					this.program = gl.createProgram();
+					//Attaches shaders to program and checks for warnings
+					//
+					for(let i in arguments) {
+						gl.attachShader(this.program, arguments[i].shader);
+						if(!hasVert && arguments[i].id === "vertex") {
+							hasVert = true;
+						}
+						if(!hasFrag && arguments[i].id === "fragment") {
+							hasFrag = true;
+						}
+					}
+					//In case user forgets
+					//
+					if(!hasVert) {
+						console.warn("WARNING: No vertex shader given at PROGRAM.new().");
+					}
+					if(!hasFrag) {
+						console.warn("WARNING: No fragment shader given at PROGRAM.new().");
+					}
+					return this;
+				};
+				//Linker
+				//
+				PROGRAM.link = function() {
+					gl.linkProgram(this.program);
+					//In case link is unsuccesful
+					//
+					if(!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+						console.error("ERROR: Unsuccesful program linking.", gl.getProgramInfoLog(this.program));
+						return false;
+					}
+					return this;
+				};
+				//User
+				//
+				PROGRAM.use = function() {
+					//Uses this program
+					//
+					gl.useProgram(this.program);
+					return this;
+				};
+				//Handle for shader properties
+				//
+				PROGRAM.newHandle = function(type, identifier) {
+					let location;
+					//User forgot input
+					//
+					if(!identifier) {
+						console.error("ERROR: Missing argument at PROGRAM.newHandle().");
+						return false;
+					}
+					//Identifies location based on type
+					//
+					switch (type) {
+						//Handles attributes
+						//
+						case "attribute":
+							location = gl.getAttribLocation(this.program, identifier);
+							break;
+							//Handles uniforms
+							//
+						case "uniform":
+							location = gl.getUniformLocation(this.program, identifier);
+							break;
+						default:
+							console.error("ERROR: type is not a defined type.");
+							return false;
+							break;
+					}
+					return location;
+				};
+				PROGRAM.useHandle = function(type, location, elementsPer, vertexSize, offsetTo, input) {
+					//User forgot input
+					//
+					if(!location && location !== 0) {
+						console.error("ERROR: Missing argument at PROGRAM.useHandle().");
+						return false;
+					}
+					//Defaults
+					//
+					offsetTo = offsetTo || 0;
+					vertexSize = vertexSize || 1;
+					elementsPer = elementsPer || 1;
+					//Identifies location based on type
+					//
+					switch (type) {
+						//Handles attributes
+						//
+						case "attribute":
+							gl.vertexAttribPointer(location, elementsPer, gl.FLOAT, gl.FALSE, vertexSize * Float32Array.BYTES_PER_ELEMENT, offsetTo * Float32Array.BYTES_PER_ELEMENT);
+							gl.enableVertexAttribArray(location);
+							break;
+							//Handles uniforms
+							//
+						case "uniform":
+							switch (input.id) {
+								case "matrix4x4":
+									//Default of matrix 4x4
+									//
+									gl.uniformMatrix4fv(location, gl.FALSE, input.value);
+									break;
+							}
+							break;
+						default:
+							console.error("ERROR: type is not a defined type.");
+							return false;
+							break;
+					}
+					return this;
+				};
+				//Bindings
+				//
+				PROGRAM.new.prototype.link = PROGRAM.link;
+				PROGRAM.new.prototype.use = PROGRAM.use;
+				PROGRAM.new.prototype.useHandle = PROGRAM.useHandle;
+				PROGRAM.new.prototype.newHandle = PROGRAM.newHandle;
+				return PROGRAM;
+			})();
+			/*BUFFER*/
+			var BUFFER = (function() {
+				//In case gl has not been defined
+				//
+				if(!gl) {
+					console.error("ERROR: gl has not been defined.");
+					return;
+				}
+				//Buffer object
+				//
+				BUFFER = {};
+				BUFFER.new = function(buffer, type) {
+					this.id = "buffer";
+					//Just in case
+					//
+					if(!buffer) {
+						console.error("ERROR: No buffer specified at BUFFER.new().");
+						return false;
+					}
+					this.buffer = gl.createBuffer();
+					this.type = type;
+					//Defines and binds buffer based on type
+					//
+					if(type === "array" || !type) {
+						//Vertices
+						//
+						buffer = new Float32Array(buffer);
+						gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+						gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.STATIC_DRAW);
+					} else if(type === "elements" || type !== "array") {
+						//Indices
+						//
+						buffer = new Uint16Array(buffer);
+						gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+						gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffer, gl.STATIC_DRAW);
+					}
+					return this;
+				};
+				BUFFER.unbind = function() {
+					//Unbinds buffers
+					//
+					if(this.type === "array" || !this.type) {
+						gl.bindBuffer(gl.ARRAY_BUFFER, null);
+					} else if(this.type === "elements" || this.type !== "array") {
+						gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+					}
+					return this;
+				};
+				//Bindings
+				//	
+				BUFFER.new.prototype.unbind = BUFFER.unbind;
+				return BUFFER;
+			})();
+			/*TEXTURE*/
+			var TEXTURE = (function() {
+				//In case gl has not been defined
+				//
+				if(!gl) {
+					console.error("ERROR: gl has not been defined.");
+					return;
+				}
+				//Texture object
+				//
+				TEXTURE = {};
+				TEXTURE.sample = function(texture, width, height) {
+					//In case
+					//
+					if(!width || !height) {
+						console.error("ERROR: Invalid dimensions provided at TEXTURE.sample().");
+						return false;
+					}
+					//Binds texture and sets parameters
+					//
+					this.texture = gl.createTexture();
+					gl.bindTexture(gl.TEXTURE_2D, this.texture);
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+					gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, texture);
+					return this;
+				};
+				TEXTURE.unbind = function() {
+					//Unbinds texture
+					//
+					gl.bindTexture(gl.TEXTURE_2D, null);
+					return this;
+				};
+				//Bindings
+				//
+				TEXTURE.sample.prototype.unbind = TEXTURE.unbind;
+				return TEXTURE;
+			})();
+		<\/script><!--Shorthand-->
+		<script>
+			/**
+	        Arrowhead Co. - WebGL Camera v1.0
+            >>> 
+            Helps in first-person viewing.
+	        >>> 
+	        Currently cannot be made orthographic.
+            **/
+			/*CAMERA*/
+			var CAMERA = (function() {
+				//The camera
+				//
+				function CAMERA(fov, min, max) {
+					//Position, looking direction, up direction
+					//
+					this.pos = {
+						x: 0,
+						y: 0,
+						z: -5
+					};
+					this.look = {
+						x: 0,
+						y: 0,
+						z: 1
+					};
+					this.up = {
+						x: 0,
+						y: 1,
+						z: 0
+					};
+					//Field of view, near plane, far plane
+					//
+					this.fov = fov || Math.PI / 4;
+					this.zMin = min || 0.1;
+					this.zMax = max || 1000;
+				}
+				//FPS
+				//
+				CAMERA.FollowFPS = function(object) {
+					//In case 
+					//
+					if(!object.looking) {
+						console.error("ERROR: Please give object a property 'looking'.");
+						return false;
+					}
+					if(!object.pos) {
+						console.error("ERROR: Please give object a property 'pos'.");
+						return false;
+					}
+					//Sets camera
+					//
+					this.pos.x = object.pos.x;
+					this.pos.y = object.pos.y;
+					this.pos.z = object.pos.z;
+					this.look.x = object.pos.x + object.looking.x;
+					this.look.y = object.pos.y + object.looking.y;
+					this.look.z = object.pos.z + object.looking.z;
+					if(object.fov) {
+						this.fov = object.fov;
+					}
+					return this;
+				};
+				//TPS
+				//
+				CAMERA.FollowTPS = function(object, dist) {
+					//In case 
+					//
+					if(!object.looking) {
+						console.error("ERROR: Please give object a property 'looking'.");
+						return false;
+					}
+					if(!object.pos) {
+						console.error("ERROR: Please give object a property 'pos'.");
+						return false;
+					}
+					let magnitude = Math.hypot(object.looking.x, object.looking.y, object.looking.z);
+					dist = dist || 2.5;
+					//Sets camera
+					//
+					this.pos.x = object.pos.x - object.looking.x / magnitude * dist;
+					this.pos.y = object.pos.y - object.looking.y / magnitude * dist;
+					this.pos.z = object.pos.z - object.looking.z / magnitude * dist;
+					this.look.x = object.pos.x;
+					this.look.y = object.pos.y;
+					this.look.z = object.pos.z;
+					return this;
+				};
+				//Bindings
+				//
+				CAMERA.prototype.FollowFPS = CAMERA.FollowFPS;
+				CAMERA.prototype.FollowTPS = CAMERA.FollowTPS;
+				return CAMERA;
+			})();
+		<\/script><!--Camera-->
+		<script>
+			/**
+	        Arrowhead Co. - WebGL Rendering Engine v1.0
+            >>> 
+            Handles the creation and manipulation of a scene.
+	        >>> 
+	        Handles the rendering of multiple objects in a scene.
+            **/
+			/*ENGINE*/
+			var GL_ENGINE = (function() {
+				//The engine
+				//
+				function GL_ENGINE(gl, vs, fs, bg) {
+					//GL object
+					//
+					this.gl = gl;
+					//Shaders
+					//
+					this.vs = vs;
+					this.fs = fs;
+					//Background color (optional)
+					//
+					this.bg = [bg[0] || 0, bg[1] || 0, bg[2] || 0, bg[3] || 1];
+					//Objects to render
+					//
+					this.objects = [];
+					//Methods for handling different object types
+					//
+					this.methods = {};
+					return this;
+				}
+				GL_ENGINE.prototype = {
+					//Creates a new method
+					//
+					method: function(method, func) {
+						this.methods[method] = func;
+					},
+					//Creates a new object and appends it
+					//
+					new: function(vertices, indices, texture, x, y, z, xl, yl, zl, id, vx, vy, vz, ax, ay, az, mx, my, mz) {
+						let object = {
+							//Location, size, orientation and other stuffs
+							//
+							x: x || 0,
+							y: y || 0,
+							z: z || 0,
+							xl: xl || 0,
+							yl: yl || 0,
+							zl: zl || 0,
+							vx: vx || 0,
+							vy: vy || 0,
+							vz: vz || 0,
+							ax: ax || 0,
+							ay: ay || 0,
+							az: az || 0,
+							mx: mx || 0,
+							my: my || 0,
+							mz: mz || 0,
+							//Id of object
+							//
+							id: id || null,
+							//When to remove object from list
+							//
+							kill: false,
+							//Buffers
+							//
+							vBuffer: vertices,
+							iBuffer: indices,
+							//Texture
+							//
+							texture: texture,
+							//Attributes and uniforms
+							//
+							attributes: {
+								vertex: {
+									size: 3,
+									totalBytes: 5,
+									offset: 0
+								},
+								txCoor: {
+									size: 2,
+									totalBytes: 5,
+									offset: 3
+								}
+							},
+							uniforms: {
+								rot: {
+									value: Matrix.identity()
+								},
+								trans: {
+									value: Matrix.identity()
+								}
+							}
+						}
+						this.objects.push(object);
+					},
+					//Initializes scene
+					//
+					init: function() {
+						//Defines program
+						//
+						this.vs = new SHADER.vertex(this.vs);
+						this.fs = new SHADER.fragment(this.fs);
+						this.vs.compile();
+						this.fs.compile();
+						this.program = PROGRAM.new(this.vs, this.fs);
+						this.program.link();
+						this.program.use();
+						//Retrieves locations
+						//
+						this.locations = {
+							attributes: ["vertex", "txCoor", ],
+							uniforms: ["proj", "world", "trans", "rot", ]
+						};
+						let locations = ["attributes", "uniforms"];
+						for(let i = 0; i < locations.length; i++) {
+							let vars = {};
+							for(let j = 0; j < this.locations[locations[i]].length; j++) {
+								vars[this.locations[locations[i]][j]] = this.program.newHandle(locations[i].substr(0, locations[i].length - 1), this.locations[locations[i]][j]);
+							}
+							this.locations[locations[i]] = vars;
+						}
+						//Defaults
+						//
+						gl.enable(gl.CULL_FACE);
+						gl.cullFace(gl.BACK);
+						gl.frontFace(gl.CCW);
+						gl.enable(gl.DEPTH_TEST);
+						return this;
+					},
+					//Runs the entire scene
+					//
+					run: function(cam) {
+						//Computes world matrix
+						//
+						let world = Matrix.lookAt(cam.pos, cam.look, cam.up);
+						let proj = Matrix.projection(cam.fov, width / height, cam.zMin, cam.zMax);
+						//Buffers
+						let vBuffer, vBufferReference;
+						let iBuffer, iBufferReference;
+						//Clears background
+						//
+						clear(0, this.bg);
+						//Renders each object in scene
+						//
+						for(let i = 0; i < this.objects.length; i++) {
+							//Updates particular object type
+							//
+							if(this.objects[i].id) {
+								this.methods[this.objects[i].id].call(this.objects[i]);
+							}
+							//Computes object matrices
+							//
+							this.objects[i].uniforms.rot.value = Matrix.rotate(this.objects[i].ax, this.objects[i].ay, this.objects[i].az);
+							this.objects[i].uniforms.trans.value = Matrix.translate(this.objects[i].x, this.objects[i].y, this.objects[i].z);
+							//Texture
+							//
+							TEXTURE.sample(this.objects[i].texture.map, this.objects[i].texture.width, this.objects[i].texture.height);
+							//Creates buffers and textures
+							//
+							vBufferReference = this.objects[i].vBuffer;
+							iBufferReference = this.objects[i].iBuffer;
+							vBuffer = new BUFFER.new(vBufferReference, "array");
+							iBuffer = new BUFFER.new(iBufferReference, "elements");
+							//Handles attributes
+							//
+							let attributes = Object.keys(this.objects[i].attributes);
+							for(let j = 0; j < attributes.length; j++) {
+								this.program.useHandle("attribute", this.locations.attributes[attributes[j]], this.objects[i].attributes[attributes[j]].size, this.objects[i].attributes[attributes[j]].totalBytes, this.objects[i].attributes[attributes[j]].offset);
+							}
+							//Handles.uniforms
+							//
+							let uniforms = Object.keys(this.objects[i].uniforms);
+							this.program.useHandle("uniform", this.locations.uniforms.proj, 0, 0, 0, proj);
+							for(let j = 0; j < uniforms.length; j++) {
+								this.program.useHandle("uniform", this.locations.uniforms[uniforms[j]], 0, 0, 0, this.objects[i].uniforms[uniforms[j]].value);
+							}
+							this.program.useHandle("uniform", this.locations.uniforms.world, 0, 0, 0, world);
+							//Draws elements
+							//
+							gl.drawElements(gl.TRIANGLES, this.objects[i].iBuffer.length, gl.UNSIGNED_SHORT, 0);
+							//Removes object when necessary
+							//
+							if(this.objects[i].kill) {
+								this.objects.splice(i, 1);
+								i--;
+							}
+						}
+						//Unbinding
+						//
+						if(vBuffer) {
+							vBuffer.unbind();
+						}
+						if(iBuffer) {
+							iBuffer.unbind();
+						}
+						return this;
+					},
+				};
+				return GL_ENGINE;
+			})();
+		<\/script><!--Engine-->
+		<script>
+			/**
+	        Arrowhead Co. - WebGL Texture Library v1.0
+            >>> 
+            Has custom texture creator.
+            >>>	
+            Currently allows only custom-generated pixel maps for textures.
+            **/
+			/*LIBRARY*/
+			var TEXTURES = {};
+			/*CONSTRUCTORS*/
+			//Defines colors
+			//
+			function color(r, g, b, a) {
+				//Defaults
+				r = r ? Math.min(Math.max(r, 0), 255) : r;
+				g = g ? Math.min(Math.max(g, 0), 255) : g;
+				b = b ? Math.min(Math.max(b, 0), 255) : b;
+				a = a ? Math.min(Math.max(a, 0), 255) : a;
+				//In case
+				//
+				if(!r && r !== 0) {
+					console.error("ERROR: Color takes in at least one parameter.");
+					return false
+				}
+				//Difference input cases
+				//
+				if(!g && g !== 0) {
+					return [r, r, r, 255];
+				}
+				if(!b && b !== 0) {
+					return [r, r, r, g];
+				}
+				if(!a && a !== 0) {
+					return [r, g, b, 255];
+				}
+				return [r, g, b, a];
+			}
+			//Defines palettes
+			//
+			function palette() {
+				let palette = {};
+				for(let i = 0; i < arguments.length; i++) {
+					palette[i] = arguments[i];
+				}
+				return palette;
+			}
+			//Defines map
+			//
+			function map() {
+				let map = {
+					value: [],
+					width: 0,
+					height: 0
+				};
+				//Parses string into arrays
+				//
+				for(let i = 0; i < arguments.length; i++) {
+					let segment;
+					segment = arguments[i].split(",");
+					if(!map.width) {
+						map.width = segment.length;
+						map.height = arguments.length;
+					}
+					//Joins arrays
+					//
+					map.value = map.value.concat(segment);
+				}
+				return map;
+			}
+			/*TEXTURE RENDERER*/
+			function texture(name, map, palette) {
+				let texture = {
+					map: new Uint8ClampedArray(map.value.length * 4),
+					width: map.width,
+					height: map.height
+				};
+				for(let i = 0; i < map.value.length; i++) {
+					//In case map does not have value
+					//
+					if(!palette[+map.value[i]]) {
+						for(let j = 0; j < 4; j++) {
+							if(j === 3) {
+								texture.map[i * 4 + j] = 255;
+								break;
+							}
+							texture.map[i * 4 + j] = 0;
+						}
+						continue;
+					}
+					//Appends colors
+					//
+					for(let j = 0; j < 4; j++) {
+						texture.map[i * 4 + j] = palette[+map.value[i]][j];
+					}
+				}
+				//Saves it in library
+				//
+				TEXTURES[name] = texture;
+				return texture;
+			}
+		<\/script><!--Textures-->
+		<script>
+			/**
+	        Arrowhead Co. - WebGL 3D Object Library v1.0
+            >>> 
+            Allows easy creation of traditional 3D Objects.
+            **/
+			/*OBJECT LIBRARY*/
+			function CUBOID(Engine, x, y, z, xl, yl, zl, id, texture, noRepeat, vx, vy, vz, ax, ay, az, mx, my, mz) {
+				//Vertices
+				//
+				var vertices = [-xl / 2, yl / 2, -zl / 2, 0, 0, -xl / 2, yl / 2, zl / 2, 0, noRepeat ? 1 : zl, xl / 2, yl / 2, zl / 2, noRepeat ? 1 : xl, noRepeat ? 1 : zl, xl / 2, yl / 2, -zl / 2, noRepeat ? 1 : xl, 0, -xl / 2, yl / 2, zl / 2, noRepeat ? 1 : yl, noRepeat ? 1 : zl, -xl / 2, -yl / 2, zl / 2, 0, noRepeat ? 1 : zl, -xl / 2, -yl / 2, -zl / 2, 0, 0, -xl / 2, yl / 2, -zl / 2, noRepeat ? 1 : yl, 0, xl / 2, yl / 2, zl / 2, noRepeat ? 1 : yl, noRepeat ? 1 : zl, xl / 2, -yl / 2, zl / 2, 0, noRepeat ? 1 : zl, xl / 2, -yl / 2, -zl / 2, 0, 0, xl / 2, yl / 2, -zl / 2, noRepeat ? 1 : yl, 0, xl / 2, yl / 2, zl / 2, noRepeat ? 1 : xl, noRepeat ? 1 : yl, xl / 2, -yl / 2, zl / 2, noRepeat ? 1 : xl, 0, -xl / 2, -yl / 2, zl / 2, 0, 0, -xl / 2, yl / 2, zl / 2, 0, noRepeat ? 1 : yl, xl / 2, yl / 2, -zl / 2, noRepeat ? 1 : xl, noRepeat ? 1 : xl, xl / 2, -yl / 2, -zl / 2, noRepeat ? 1 : xl, 0, -xl / 2, -yl / 2, -zl / 2, 0, 0, -xl / 2, yl / 2, -zl / 2, 0, noRepeat ? 1 : yl, -xl / 2, -yl / 2, -zl / 2, 0, 0, -xl / 2, -yl / 2, zl / 2, 0, noRepeat ? 1 : zl, xl / 2, -yl / 2, zl / 2, noRepeat ? 1 : xl, noRepeat ? 1 : zl, xl / 2, -yl / 2, -zl / 2, noRepeat ? 1 : xl, 0];
+				var indices = [
+					0, 1, 2, 0, 2, 3, 5, 4, 6, 6, 4, 7, 8, 9, 10, 8, 10, 11, 13, 12, 14, 15, 14, 12, 16, 17, 18, 16, 18, 19, 21, 20, 22, 22, 20, 23
+				];
+				Engine.new(vertices, indices, texture, x, y, z, xl, yl, zl, id, vx, vy, vz, ax, ay, az, mx, my, mz);
+				return true;
+			}
+
+			function CUBE(Engine, //Engine to be used
+				x, y, z, s, id, //Location, size, id
+				texture, noRepeat, //Texture and texture parameters
+				vx, vy, vz, //Velocity
+				ax, ay, az, //Angular orientation
+				mx, my, mz //Angular velocities
+			) {
+				CUBOID(Engine, x, y, z, s, s, s, id, texture, noRepeat, vx, vy, vz, ax, ay, az, mx, my, mz);
+				return true;
+			}
+		<\/script><!--Objects-->
+		<script>
+			/*GLOBALS*/
+			var start;
+			RESOLUTION = 1;
+			resize();
+			/*FONTS*/
+			fontDefine("Russo One");
+			/*CAMERA*/
+			var Camera = new CAMERA(Math.PI / 4, 0.1, 200);
+			/*ENGINE*/
+			var Engine = new GL_ENGINE(gl, "vertex-shader", "fragment-shader", [0, 0, 0, 1]);
+			/*PLAYER OBJECT*/
+			var player = (function() {
+				player = {
+					pos: {
+						x: 0,
+						y: 2,
+						z: 0
+					},
+					prev: {
+						x: 0,
+						y: 0,
+						z: 0
+					},
+					dir: {
+						x: 0,
+						y: 0,
+						z: 1
+					},
+					looking: {
+						x: 0,
+						y: 0,
+						z: 1
+					},
+					size: {
+						x: 0.8,
+						y: 2.0,
+						z: 0.8
+					},
+					oFov: Math.PI / 3,
+					fov: Math.PI / 3,
+					yaw: 0,
+					pitch: 0,
+					oSpeed: 0.075,
+					speed: 0.075,
+					health: 100,
+					score: 0
+				};
+				player.move = function() {
+					//Jump
+					//
+					if(keys.SPACE && !this.dir.y) {
+						this.dir.y = 0.2;
+					}
+					//Looking direction
+					//
+					this.looking = {
+						x: 0,
+						y: 0,
+						z: 1
+					};
+					this.looking = Matrix.xVector(this.looking, Matrix.rotateX(-this.pitch).value);
+					this.looking = Matrix.xVector(this.looking, Matrix.rotateY(-this.yaw).value);
+					//Previous position
+					//
+					this.prev.x = this.pos.x;
+					this.prev.y = this.pos.y;
+					this.prev.z = this.pos.z;
+					//Player movement via keys
+					//
+					if(keys.W || keys.UP) {
+						this.pos.x += this.dir.x * this.speed;
+						this.pos.z += this.dir.z * this.speed;
+					}
+					if(keys.S || keys.DOWN) {
+						this.pos.x -= this.dir.x * this.speed;
+						this.pos.z -= this.dir.z * this.speed;
+					}
+					if(keys.A || keys.LEFT) {
+						this.pos.x += this.dir.z * this.speed;
+						this.pos.z += -this.dir.x * this.speed;
+					}
+					if(keys.D || keys.RIGHT) {
+						this.pos.x -= this.dir.z * this.speed;
+						this.pos.z -= -this.dir.x * this.speed;
+					}
+					this.pos.y += this.dir.y;
+					//Changes looking position based on mouse
+					//
+					this.yaw -= mouse.dx / 500;
+					this.pitch -= mouse.dy / 500;
+					if(this.pitch > Math.PI / 2 - 0.01) {
+						this.pitch = Math.PI / 2 - 0.01;
+					}
+					if(this.pitch < -Math.PI / 2 + 0.01) {
+						this.pitch = -Math.PI / 2 + 0.01;
+					}
+					//Changes direction based on where it's looking
+					//
+					this.dir.x = Math.sin(this.yaw);
+					this.dir.z = Math.cos(this.yaw);
+				};
+				player.grav = function() {
+					this.dir.y -= 0.01;
+				};
+				player.shoot = function() {
+					//Allows shooting by mouse clicking
+					//
+					if(mouse.pressed) {
+						if(mouse.button === "left") {
+							CUBOID(Engine, this.pos.x + this.looking.x, this.pos.y + this.looking.y, this.pos.z + this.looking.z, 0.5, 0.1, 0.1, "bullet", TEXTURES.BULLET, 1, this.looking.x * 0.75, this.looking.y * 0.75, this.looking.z * 0.75);
+						}
+					}
+					if(mouse.rightIsPressed) {
+						this.fov -= (this.fov - this.oFov / 2) / 3;
+						this.speed -= (this.speed - this.oSpeed / 2) / 3;
+					} else {
+						this.fov -= (this.fov - this.oFov) / 3;
+						this.speed -= (this.speed - this.oSpeed) / 3;
+					}
+				};
+				return player;
+			})();
+			/*TEXTURES*/
+			var palettes = [
+				//Bullet
+				//
+				palette(color(255)),
+				//Walls and floors
+				//
+				palette(color(25, 0, 50), color(155, 20, 155), color(55, 20, 155), color(185, 155, 225)),
+				//Enemy
+				//
+				palette(color(255, 50, 50), color(100, 25, 25)),
+				//Particle
+				//
+				palette(color(255, 50, 150), color(100, 25, 75)),
+				//Box
+				//
+				palette(color(255, 255, 50), color(0), color(200, 200, 180))
+			];
+			var maps = [
+				//Monochrome map
+				//
+				map("0"),
+				//Floor map
+				//
+				map("3,1,1,1,1,1,1,2,1,2,2,2,2,2,2,3", 
+				    "2,0,3,0,3,0,3,2,1,0,3,0,3,0,3,1", 
+				    "2,3,0,3,0,3,0,2,1,3,0,3,0,3,0,1", 
+				    "2,0,3,0,3,0,3,2,1,0,3,0,3,0,3,1", 
+				    "2,3,0,3,0,3,0,2,1,3,0,3,0,3,0,1", 
+				    "2,0,3,0,3,0,3,2,1,0,3,0,3,0,3,1", 
+				    "2,3,0,3,0,3,0,2,1,3,0,3,0,3,0,1", 
+				    "1,1,1,1,1,1,1,3,3,2,2,2,2,2,2,2", 
+				    "2,2,2,2,2,2,2,3,3,1,1,1,1,1,1,1", 
+				    "2,0,3,0,3,0,3,2,1,0,3,0,3,0,3,1", 
+				    "2,3,0,3,0,3,0,2,1,3,0,3,0,3,0,1", 
+				    "2,0,3,0,3,0,3,2,1,0,3,0,3,0,3,1", 
+				    "2,3,0,3,0,3,0,2,1,3,0,3,0,3,0,1", 
+				    "2,0,3,0,3,0,3,2,1,0,3,0,3,0,3,1", 
+				    "2,3,0,3,0,3,0,2,1,3,0,3,0,3,0,1", 
+				    "3,2,2,2,2,2,2,2,1,1,1,1,1,1,1,3"),
+				//Enemy map
+				//
+				map("0,1", 
+				"1,0"),
+				//Box map
+				//
+				map("0,1,1,1,1,1,1,0", 
+				    "1,2,2,2,2,2,2,1", 
+				    "1,2,2,2,2,2,2,1", 
+				    "1,2,2,2,2,2,2,1", 
+				    "1,2,2,2,2,2,2,1", 
+				    "1,2,2,2,2,2,2,1", 
+				    "1,2,2,2,2,2,2,1", 
+				    "0,1,1,1,1,1,1,0")
+			];
+			texture("BULLET", maps[0], palettes[0]);
+			texture("GROUND", maps[1], palettes[1]);
+			texture("ENEMY", maps[2], palettes[2]);
+			texture("PARTICLE", maps[2], palettes[3]);
+			texture("BOX", maps[3], palettes[4]);
+			/*GAME OBJECT FUNCTIONS*/
+			var enemies = {};
+
+			function Block() {
+				if(player.pos.x > this.x - this.xl / 2 - player.size.x / 2 && player.pos.x < this.x + this.xl / 2 + player.size.x / 2 && player.pos.y > this.y - this.yl / 2 - player.size.y / 2 && player.pos.y < this.y + this.yl / 2 + player.size.y / 2 && player.pos.z > this.z - this.zl / 2 - player.size.z / 2 && player.pos.z < this.z + this.zl / 2 + player.size.z / 2) {
+					if(player.pos.y < this.y + this.yl / 2 + player.size.y / 2 && player.prev.y >= this.y + this.yl / 2 + player.size.y / 2) {
+						player.pos.y = this.y + this.yl / 2 + player.size.y / 2;
+						player.dir.y = 0;
+					} else if(player.pos.y > this.y - this.yl / 2 - player.size.y / 2 && player.prev.y <= this.y - this.yl / 2 - player.size.y / 2) {
+						player.pos.y = this.y - this.yl / 2 - player.size.y / 2;
+						player.dir.y = 0;
+					} else if(player.pos.x > this.x - this.xl / 2 - player.size.x / 2 && player.prev.x <= this.x - this.xl / 2 - player.size.x / 2) {
+						player.pos.x = this.x - this.xl / 2 - player.size.x / 2;
+					} else if(player.pos.x < this.x + this.xl / 2 + player.size.x / 2 && player.prev.x >= this.x + this.xl / 2 + player.size.x / 2) {
+						player.pos.x = this.x + this.xl / 2 + player.size.x / 2;
+					} else if(player.pos.z > this.z - this.zl / 2 - player.size.z / 2 && player.prev.z <= this.z - this.zl / 2 - player.size.z / 2) {
+						player.pos.z = this.z - this.zl / 2 - player.size.z / 2;
+					} else if(player.pos.z < this.z + this.zl / 2 + player.size.z / 2 && player.prev.z >= this.z + this.zl / 2 + player.size.z / 2) {
+						player.pos.z = this.z + this.zl / 2 + player.size.z / 2;
+					}
+					return true;
+				}
+				return false;
+			}
+
+			function Bullet() {
+				//Sets orientation
+				//
+				if(!this.ay || !this.az) {
+					let mag = Math.hypot(this.vx, this.vy, this.vz);
+					this.ay = -Math.atan(this.vx / (this.vz ? this.vz : 0.001)) - Math.PI / 2;
+					this.az = -Math.asin(-this.vy / mag);
+					if(this.vz < 0) {
+						this.ay = Math.PI + this.ay;
+					}
+				}
+				//Velocity incrementation
+				//
+				this.x += this.vx;
+				this.y += this.vy;
+				this.z += this.vz;
+				//Enemy killing
+				let enems = Object.keys(enemies);
+				for(let i = 0; i < enems.length; i++) {
+					if((this.x - enemies[enems[i]].x) * (this.x - enemies[enems[i]].x) + (this.y - enemies[enems[i]].y) * (this.y - enemies[enems[i]].y) + (this.z - enemies[enems[i]].z) * (this.z - enemies[enems[i]].z) <= ((this.xl + this.yl + this.zl) / 3 + enemies[enems[i]].s / 1.75) * ((this.xl + this.yl + this.zl) / 3 + enemies[enems[i]].s / 1.75)) {
+						enemies[enems[i]].kill = true;
+						this.kill = true;
+					}
+				}
+				//If time to be deleted
+				//
+				if((this.x - player.pos.x) * (this.x - player.pos.x) + (this.y - player.pos.y) * (this.y - player.pos.y) + (this.z - player.pos.z) * (this.z - player.pos.z) > 40 * 40) {
+					this.kill = true;
+					return true;
+				}
+				return false;
+			}
+
+			function Enemy() {
+				if(!this.added) {
+					this.added = Math.round(Math.random() * 999999).toString();
+					enemies[this.added] = {
+						x: this.x,
+						y: this.y,
+						z: this.z,
+						s: (this.xl + this.yl + this.zl) / 3
+					};
+				} else {
+					enemies[this.added].x = this.x;
+					enemies[this.added].y = this.y;
+					enemies[this.added].z = this.z;
+					//Deletion
+					//
+					if(enemies[this.added].kill) {
+						let size = Math.random() * 0.75 * enemies[this.added].s;
+						for(let i = 0; i < Math.random() * 5 + 5; i++) {
+							CUBOID(Engine, this.x, this.y, this.z, size, size, size, "particle", TEXTURES.PARTICLE, 1, Math.random() * 0.4 - 0.2, Math.random() * 0.4 - 0.2, Math.random() * 0.4 - 0.2);
+						}
+						if(player.health) {
+							player.score++;
+						}
+						this.kill = true;
+						delete enemies[this.added];
+					}
+				}
+				//Sets velocity
+				//
+				let velocity = {
+					x: player.pos.x - this.x,
+					y: player.pos.y - this.y,
+					z: player.pos.z - this.z
+				};
+				let mag = Math.hypot(velocity.x, velocity.y, velocity.z);
+				velocity.x /= mag * 30;
+				velocity.y /= mag * 30;
+				velocity.z /= mag * 30;
+				this.vx = velocity.x;
+				this.vy = velocity.y;
+				this.vz = velocity.z;
+				//Sets orientation
+				//
+				mag = Math.hypot(this.vx, this.vy, this.vz);
+				this.ay = -Math.atan(this.vx / (this.vz ? this.vz : 0.001)) - Math.PI / 2;
+				this.az = -Math.asin(-this.vy / mag);
+				if(this.vz < 0) {
+					this.ay = Math.PI + this.ay;
+				}
+				//Velocity incrementation
+				//
+				this.x += this.vx;
+				this.y += this.vy;
+				this.z += this.vz;
+				//Health deduction
+				//
+				if(player.pos.x > this.x - this.xl / 2 - player.size.x / 2 && player.pos.x < this.x + this.xl / 2 + player.size.x / 2 && player.pos.y > this.y - this.yl / 2 - player.size.y / 2 && player.pos.y < this.y + this.yl / 2 + player.size.y / 2 && player.pos.z > this.z - this.zl / 2 - player.size.z / 2 && player.pos.z < this.z + this.zl / 2 + player.size.z / 2) {
+					player.health -= 0.25;
+				}
+				if(!player.health) {
+					this.kill = delete enemies[this.added];
+				}
+				return false;
+			}
+
+			function Particle() {
+				//Timing
+				//
+				if(this.time <= 0) {
+					this.kill = true;
+				} else if(!this.time) {
+					this.time = Math.random() * 25 + 25;
+				} else {
+					this.time--;
+				}
+				//Sets orientation
+				//
+				mag = Math.hypot(this.vx, this.vy, this.vz);
+				this.ay = -Math.atan(this.vx / (this.vz ? this.vz : 0.001)) - Math.PI / 2;
+				this.az = -Math.asin(-this.vy / mag);
+				if(this.vz < 0) {
+					this.ay = Math.PI + this.ay;
+				}
+				//Velocity incrementation
+				//
+				this.x += this.vx;
+				this.y += this.vy;
+				this.z += this.vz;
+				return false;
+			}
+			/*LEVEL THINGS*/
+			var level = 1;
+			var scoreAtLev = [10, 5, 15, 7];
+
+			function clearAll() {
+				Engine.objects = [];
+			}
+
+			function testLevChange() {
+				if(player.score >= scoreAtLev[level - 1]) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			/*BINDINGS TO ENGINE*/
+			Engine.method("block", Block);
+			Engine.method("bullet", Bullet);
+			Engine.method("enemy", Enemy);
+			Engine.method("particle", Particle);
+			/*SETUP*/
+			function walls(s) {
+				CUBOID(Engine, 0, -s / 20, 0, s, s / 10, s, "block", TEXTURES.GROUND, 1);
+				CUBOID(Engine, 0, s + s / 20, 0, s, s / 10, s, "block", TEXTURES.GROUND, 1);
+				CUBOID(Engine, 0, s / 2, -s / 2 - s / 20, s, s, s / 10, "block", TEXTURES.GROUND, 1);
+				CUBOID(Engine, 0, s / 2, s / 2 + s / 20, s, s, s / 10, "block", TEXTURES.GROUND, 1);
+				CUBOID(Engine, -s / 2 - s / 20, s / 2, 0, s / 10, s, s, "block", TEXTURES.GROUND, 1);
+				CUBOID(Engine, s / 2 + s / 20, s / 2, 0, s / 10, s, s, "block", TEXTURES.GROUND, 1);
+			}
+
+			function lev1() {
+				walls(10);
+				CUBOID(Engine, 2.5, 4.5, 2.5, 5, 1, 5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -1.5, 2.5, 3.5, 3, 1, 3, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -4.0, 1, 0.0, 2, 2, 10, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -2.5, 6.5, -2.5, 5, 1, 5, "block", TEXTURES.BOX, 1);
+			}
+
+			function lev2() {
+				walls(10);
+				CUBOID(Engine, 3.75, 1.5, 3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 1.25, 1.5, 3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -1.25, 1.5, 3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -3.75, 1.5, 3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 3.75, 1.5, -3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 1.25, 1.5, -3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -1.25, 1.5, -3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -3.75, 1.5, -3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -3.75, 1.5, -1.25, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -3.75, 1.5, 1.25, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 3.75, 1.5, -1.25, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 3.75, 1.5, 1.25, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 3.75, 5.5, 3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 1.25, 5.5, 3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -1.25, 5.5, 3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -3.75, 5.5, 3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 3.75, 5.5, -3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 1.25, 5.5, -3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -1.25, 5.5, -3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -3.75, 5.5, -3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -3.75, 5.5, -1.25, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, -3.75, 5.5, 1.25, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 3.75, 5.5, -1.25, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 3.75, 5.5, 1.25, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+				CUBOID(Engine, 0, 3.5, 0, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
+			}
+
+			function reset() {
+				player.health = 100;
+				player.pos.x = 0;
+				player.pos.y = 2;
+				player.pos.z = 0;
+				player.score = 0;
+				title.innerHTML = "";
+				clearAll();
+				if(level === 1) {
+					lev1();
+				} else if(level === 2) {
+					lev2();
+				}
+			}
+			Engine.init();
+			var time = 0;
+			var info = document.getElementById("info");
+			var title = document.getElementById("title");
+			var health = document.getElementById("controls");
+			//Suggested by Fodd Gack
+			//
+			if(window.innerWidth >= 1200) {
+				document.getElementById("info").style.paddingBottom = "0px";
+			}
+			lev1();
+			/*GAME LOOP*/
+			function game() {
+				Engine.run(Camera);
+				Camera.FollowFPS(player);
+				//Controls
+				//
+				if(start || player.health) {
+					player.move();
+					player.shoot();
+				}
+				player.grav();
+				info.style.backgroundColor = "rgba(255,0,0," + (100 - player.health) / 255 + ")";
+				//Enemy generation
+				//
+				if(Object.keys(enemies)
+					.length <= 5 && time % 100 === 0 && start) {
+					CUBOID(Engine, Math.random() * 10 - 5, Math.random() * 10, Math.random() * 10 - 5, 0.5, 0.5, 0.5, "enemy", TEXTURES.ENEMY, 1);
+				}
+				if(mouse.pressed && !start) {
+					start = true;
+				} else if(start) {
+					time++;
+					health.innerHTML = "HEALTH : " + Math.round(player.health * 100) / 100 + "%<br />" + "SCORE : " + player.score;
+				}
+				if(testLevChange()) {
+					level++;
+					reset();
+				}
+				//Health stats
+				//
+				if(player.health <= 0) {
+					player.health = 0;
+					title.innerHTML = "GAME OVER";
+					health.innerHTML = "PRESS R TO RESTART<br>" + "SCORE : " + player.score;
+					if(keys.R) {
+						reset();
+					}
+				}
+				mouse.reset();
+				requestAnimationFrame(game);
+			}
+			game();
+		<\/script><!--Game-->
+	</body>
+</html>`);
+				w.document.close();
+			}
+		</script>
+	</body>
+</html>
