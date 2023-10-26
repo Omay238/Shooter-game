@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
 		<title>SHOOTER</title>
+		<meta name="author" content="Arrowhead Co. & Omay Operations" />
+		<meta name="description" content="WebGL shooter" />
 		<style>
 			* {
 				box-sizing: border-box;
 				margin: 0;
 				padding: 0;
 				overflow: hidden;
+				font-family: Russo One;
+				text-align: center;
+				text-decoration: none;
 				pointer-events: none;
 			}
-			
+
 			canvas {
 				width: 100vw;
 				height: 100vh;
 				pointer-events: auto;
 			}
-			
+
 			shader {
 				display: none;
 			}
@@ -31,19 +35,17 @@
 				width: 100vw;
 				height: 100vh;
 				color: white;
-				font-family: Russo One;
-				text-align: center;
 			}
-			
+
 			#info>div {
 				background-color: rgba(0, 0, 0, 0.6);
 				position: inline-block;
 			}
-			
+
 			#title {
 				font-size: 7vw;
 			}
-			
+
 			#controls {
 				position: fixed;
 				padding: 20px;
@@ -51,20 +53,19 @@
 				bottom: 0;
 				width: 100vw;
 				font-size: 3vw;
-				font-family: Russo One;
 				text-align: center;
 			}
-			
+
 			#crosshair {
 				position: fixed;
-				top: 50vh;
+				top: 53vh;
 				left: 50vw;
 				margin: -62.5px;
 				width: 125px;
 				height: 125px;
 				padding: 0;
 				color: red;
-				font-size: 100px;
+				font-size: 75px;
 				text-align: center;
 				-webkit-text-stroke-width: 1px;
 				-webkit-text-stroke-color: black;
@@ -72,22 +73,24 @@
 			}
 		</style>
 	</head>
+
 	<body>
-		<div id="vertex-shader" class="shader">/**Arrowhead Co. - Vertex Shader v1.0>>> Vertex shader for 3D WebGL Engine.**//*VERTEX SHADER*/precision mediump float;uniform mat4 proj;uniform mat4 world;uniform mat4 trans;uniform mat4 rot;attribute vec3 vertex;attribute vec2 txCoor;varying vec2 fragTex;void main(){fragTex = txCoor;gl_Position = proj * world * trans * rot * vec4(vertex, 1.0);}</div>
-		<div id="fragment-shader" class="shader">/**Arrowhead Co. - Fragment Shader v1.0>>> Fragment shader for 3D WebGL Engine.**/precision mediump float;uniform sampler2D texture;varying vec2 fragTex;void main(){gl_FragColor = texture2D(texture, fragTex);}</div>
+		<canvas>ERROR: Browser does not support HTML5.</canvas>
+		<div id="vertex-shader"> /** Arrowhead Co. - Vertex Shader v1.0 >>> Vertex shader for 3D WebGL Engine. **/ /*VERTEX SHADER*/ precision mediump float; uniform mat4 proj; uniform mat4 world; uniform mat4 trans; uniform mat4 rot; attribute vec3 vertex; attribute vec2 txCoor; varying vec2 fragTex; void main(){ fragTex = txCoor; gl_Position = proj * world * trans * rot * vec4(vertex, 1.0); } </div>
+		<div id="fragment-shader"> /** Arrowhead Co. - Fragment Shader v1.0 >>> Fragment shader for 3D WebGL Engine. **/ precision mediump float; uniform sampler2D texture; varying vec2 fragTex; void main(){ gl_FragColor = texture2D(texture, fragTex); } </div>
 		<div id="info">
 			<div id="title"></div>
-			<div id="controls"> CLICK TO SHOOT AT THE RED THINGS / ESC TO EXIT<br> WASD / ARROW + SPACE KEYS TO MOVE </div>
+			<div id="controls"> CLICK TO SHOOT AT THE RED THINGS / ESC TO EXIT<br />WASD / ARROW + SPACE KEYS TO MOVE </div>
 		</div>
-		<div id="crosshair"> + </div>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-iostream-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-context-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-matrix-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-shorthand-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-camera-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-engine-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-textures-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-objects-v1.0.min.js"></script>
+		<div id="crosshair">O</div>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-iostream-v1.0.min.js"><\/script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-context-v1.0.min.js"><\/script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-matrix-v1.0.min.js"><\/script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-shorthand-v1.0.min.js"><\/script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-camera-v1.0.min.js"><\/script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-engine-v1.0.min.js"><\/script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-textures-v1.0.min.js"><\/script>
+		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-objects-v1.0.min.js"><\/script>
 		<script>
 			/*GLOBALS*/
 			var start;
