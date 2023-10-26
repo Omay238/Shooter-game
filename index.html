@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<title>SHOOTER</title>
 		<meta name="author" content="Arrowhead Co. & Omay Operations" />
@@ -10,7 +10,7 @@
 				margin: 0;
 				padding: 0;
 				overflow: hidden;
-				font-family: Russo One;
+				font-family: Russo One, monospace;
 				text-align: center;
 				text-decoration: none;
 				pointer-events: none;
@@ -25,7 +25,7 @@
 			shader {
 				display: none;
 			}
-			
+
 			#info {
 				position: fixed;
 				top: 0;
@@ -39,7 +39,7 @@
 
 			#info>div {
 				background-color: rgba(0, 0, 0, 0.6);
-				position: inline-block;
+				display: inline-block;
 			}
 
 			#title {
@@ -48,8 +48,7 @@
 
 			#controls {
 				position: fixed;
-				padding: 20px;
-				padding-bottom: 40px;
+				padding: 20px 20px 40px;
 				bottom: 0;
 				width: 100vw;
 				font-size: 3vw;
@@ -83,27 +82,27 @@
 			<div id="controls"> CLICK TO SHOOT AT THE RED THINGS / ESC TO EXIT<br />WASD / ARROW + SPACE KEYS TO MOVE </div>
 		</div>
 		<div id="crosshair">O</div>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-iostream-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-context-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-matrix-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-shorthand-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-camera-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-engine-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-textures-v1.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/ArrowheadCo/WebGL-Engine3D-v1.0/webgl-objects-v1.0.min.js"></script>
+		<script src="./webgl-iostream-v1.0.min.js"></script>
+		<script src="./webgl-context-v1.0.min.js"></script>
+		<script src="./webgl-matrix-v1.0.min.js"></script>
+		<script src="./webgl-shorthand-v1.0.min.js"></script>
+		<script src="./webgl-camera-v1.0.min.js"></script>
+		<script src="./webgl-engine-v1.0.min.js"></script>
+		<script src="./webgl-textures-v1.0.min.js"></script>
+		<script src="./webgl-objects-v1.0.min.js"></script>
 		<script>
 			/*GLOBALS*/
-			var start;
+			let start;
 			RESOLUTION = 1;
 			resize();
 			/*FONTS*/
 			fontDefine("Russo One");
 			/*CAMERA*/
-			var Camera = new CAMERA(Math.PI / 4, 0.1, 200);
+			let Camera = new CAMERA(Math.PI / 4, 0.1, 200);
 			/*ENGINE*/
-			var Engine = new GL_ENGINE(gl, "vertex-shader", "fragment-shader", [0, 0, 0, 1]);
+			let Engine = new GL_ENGINE(gl, "vertex-shader", "fragment-shader", [0, 0, 0, 1]);
 			/*PLAYER OBJECT*/
-			var player = (function () {
+			let player = (function () {
 				player = {
 					pos: {
 						x: 0,
@@ -215,7 +214,7 @@
 				return player;
 			})();
 			/*TEXTURES*/
-			var palettes = [
+			let palettes = [
 				//Bullet
 				//
 				palette(color(255)),
@@ -232,7 +231,7 @@
 				//
 				palette(color(255, 255, 50), color(0), color(200, 200, 180))
 			];
-			var maps = [
+			let maps = [
 				//Monochrome map
 				//
 				map("0"),
@@ -252,8 +251,8 @@
 			texture("PARTICLE", maps[2], palettes[3]);
 			texture("BOX", maps[3], palettes[4]);
 			/*GAME OBJECT FUNCTIONS*/
-			var enemies = {};
-			
+			let enemies = {};
+
 			function Block() {
 				if (player.pos.x > this.x - this.xl / 2 - player.size.x / 2 && player.pos.x < this.x + this.xl / 2 + player.size.x / 2 && player.pos.y > this.y - this.yl / 2 - player.size.y / 2 && player.pos.y < this.y + this.yl / 2 + player.size.y / 2 && player.pos.z > this.z - this.zl / 2 - player.size.z / 2 && player.pos.z < this.z + this.zl / 2 + player.size.z / 2) {
 					if (player.pos.y < this.y + this.yl / 2 + player.size.y / 2 && player.prev.y >= this.y + this.yl / 2 + player.size.y / 2) {
@@ -275,7 +274,7 @@
 				}
 				return false;
 			}
-			
+
 			function Bullet() {
 				//Sets orientation
 				//
@@ -308,7 +307,7 @@
 				}
 				return false;
 			}
-			
+
 			function Enemy() {
 				if (!this.added) {
 					this.added = Math.round(Math.random() * 999999).toString();
@@ -373,7 +372,7 @@
 				}
 				return false;
 			}
-			
+
 			function Particle() {
 				//Timing
 				//
@@ -400,19 +399,15 @@
 				return false;
 			}
 			/*LEVEL THINGS*/
-			var level = 1;
-			var scoreAtLev = [10, 5, 15, 7];
-			
+			let level = 1;
+			let scoreAtLev = [10, 5, 15, 7];
+
 			function clearAll() {
 				Engine.objects = [];
 			}
-			
+
 			function testLevChange() {
-				if (player.score >= scoreAtLev[level - 1]) {
-					return true;
-				} else {
-					return false;
-				}
+				return player.score >= scoreAtLev[level - 1];
 			}
 			/*BINDINGS TO ENGINE*/
 			Engine.method("block", Block);
@@ -428,7 +423,7 @@
 				CUBOID(Engine, -s / 2 - s / 20, s / 2, 0, s / 10, s, s, "block", TEXTURES.GROUND, 1);
 				CUBOID(Engine, s / 2 + s / 20, s / 2, 0, s / 10, s, s, "block", TEXTURES.GROUND, 1);
 			}
-			
+
 			function lev1() {
 				walls(10);
 				CUBOID(Engine, 2.5, 4.5, 2.5, 5, 1, 5, "block", TEXTURES.BOX, 1);
@@ -436,7 +431,7 @@
 				CUBOID(Engine, -4.0, 1, 0.0, 2, 2, 10, "block", TEXTURES.BOX, 1);
 				CUBOID(Engine, -2.5, 6.5, -2.5, 5, 1, 5, "block", TEXTURES.BOX, 1);
 			}
-			
+
 			function lev2() {
 				walls(10);
 				CUBOID(Engine, 3.75, 1.5, 3.75, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
@@ -465,7 +460,7 @@
 				CUBOID(Engine, 3.75, 5.5, 1.25, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
 				CUBOID(Engine, 0, 3.5, 0, 2.5, 1, 2.5, "block", TEXTURES.BOX, 1);
 			}
-			
+
 			function reset() {
 				player.health = 100;
 				player.pos.x = 0;
@@ -481,10 +476,10 @@
 				}
 			}
 			Engine.init();
-			var time = 0;
-			var info = document.getElementById("info");
-			var title = document.getElementById("title");
-			var health = document.getElementById("controls");
+			let time = 0;
+			let info = document.getElementById("info");
+			let title = document.getElementById("title");
+			let health = document.getElementById("controls");
 			//Suggested by Fodd Gack
 			//
 			if (window.innerWidth >= 1200) {
